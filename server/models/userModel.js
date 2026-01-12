@@ -11,7 +11,6 @@ const userschema = new mongoose.Schema({
   resetotpExpire: { type: Number, default: 0 },
 });
 
-
 const userModel = mongoose.models.users || mongoose.model('users', userschema);
 
 export default userModel;
