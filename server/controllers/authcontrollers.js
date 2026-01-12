@@ -32,8 +32,7 @@ export const register = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    return res.json({success: true, message: 'user registered successfully'});
-
+    return res.json({ success: true, message: 'user registered successfully' });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
@@ -55,26 +54,34 @@ export const login = async (req, res) => {
     const isMatch = await bcrypt.compare('password', user.password);
 
     if (!isMatch) {
-  
       return res.json({ success: false, message: 'invalid password' });
-}
+    }
 
     const token = jwt.sign({ id: user_id }, process.env.JWT_SECRET, {
-       expiresIn:'7d'
-     })
+      expiresIn: '7d',
+    });
 
-    
     res.cookie('token', token, {
-      
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       samesite: process.env.NODE_ENV === 'poduction' ? 'none' : 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000,
-    })
+    });
     return res.json({ success: true, message: 'user logged in successfully' });
-    
-    
-    
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
+
+const logout = async (req, res) => {
+  try {
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      samesite: process.env.NODE_ENV === 'poduction' ? 'none' : 'strict',
+    });
+
+    return res.json({ success: true, message: 'user logged out successfully' });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
