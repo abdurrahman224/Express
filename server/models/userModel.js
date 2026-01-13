@@ -7,7 +7,7 @@ const userschema = new mongoose.Schema({
   verifyOtp: { type: String, default: '' },
   verifyOtpExpire: { type: Number, default: 0 },
   isAccountVerified: { type: Boolean, default: false },
-  resetotp: { Type: String, default: '' },
+  resetotp: { type: String, default: '' },
   resetotpExpire: { type: Number, default: 0 },
 });
 

@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
-import userModel from '../models/userModel';
+import userModel from '../models/userModel.js';
+import  jwt  from 'jsonwebtoken';
 
 export const register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -51,13 +52,13 @@ export const login = async (req, res) => {
       return res.json({ success: false, message: 'invalid email ' });
     }
 
-    const isMatch = await bcrypt.compare('password', user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       return res.json({ success: false, message: 'invalid password' });
     }
 
-    const token = jwt.sign({ id: user_id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: '7d',
     });
 
@@ -67,13 +68,13 @@ export const login = async (req, res) => {
       samesite: process.env.NODE_ENV === 'poduction' ? 'none' : 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    return res.json({ success: true, message: 'user logged in successfully' });
+    return res.json({ success: true, message: 'user login successfully' });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
 };
 
-const logout = async (req, res) => {
+export const logout = async (req, res) => {
   try {
     res.clearCookie('token', {
       httpOnly: true,
@@ -81,7 +82,7 @@ const logout = async (req, res) => {
       samesite: process.env.NODE_ENV === 'poduction' ? 'none' : 'strict',
     });
 
-    return res.json({ success: true, message: 'user logged out successfully' });
+    return res.json({ success: true, message: 'user logout successfully' });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
